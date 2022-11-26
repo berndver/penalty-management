@@ -1,26 +1,37 @@
-import React from 'react';
-import logo from './logo.svg';
+import React, { FunctionComponent, useEffect } from 'react';
 import './App.css';
+import { useRoutes } from 'react-router-dom';
+import { routes } from './common/routes';
+import NavigationBar from './components/common/NavigationBar';
+import { useFirebaseAuth } from './hooks/useFirebaseAuth';
+import { useDispatch } from 'react-redux';
+import { updateStatus, updateUser } from './redux-modules/domain/login/actions';
+import { LoginStatus } from './constants/loginStatus';
+import { Container } from '@mui/material';
 
-function App() {
+const App: FunctionComponent = () => {
+  const appRoutes = useRoutes(routes);
+  const firebaseAuth = useFirebaseAuth();
+
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    firebaseAuth.onAuthStateChanged((user) => {
+      if (!user || !user.uid || !user.email) {
+        dispatch(updateStatus(LoginStatus.Unauthenticated));
+      } else {
+        dispatch(updateUser({ id: user.uid, email: user.email, displayName: user.displayName ?? undefined }));
+        dispatch(updateStatus(LoginStatus.Authenticated));
+      }
+    });
+  }, [dispatch, firebaseAuth]);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <>
+      <NavigationBar />
+      <Container>{appRoutes}</Container>
+    </>
   );
-}
+};
 
 export default App;
