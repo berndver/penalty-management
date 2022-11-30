@@ -13,7 +13,7 @@ type EntityReducerState<TEntity> = EntityState<TEntity> & {
 };
 
 export type PenaltyReducerState = EntityReducerState<Penalty>;
-export type TeamReducerState = EntityReducerState<Team>;´0
+export type TeamReducerState = EntityReducerState<Team>;
 
 export type AppState = {
   domain: {
