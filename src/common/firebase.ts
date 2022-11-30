@@ -2,7 +2,8 @@
 import { initializeApp } from 'firebase/app';
 import { getAnalytics } from 'firebase/analytics';
 import { getAuth } from 'firebase/auth';
-import { getFirestore } from 'firebase/firestore';
+import { collection, DocumentData, getFirestore, QueryDocumentSnapshot, SnapshotOptions } from 'firebase/firestore';
+import { Team } from '../types/domain';
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 
@@ -23,3 +24,11 @@ export const firebaseApp = initializeApp(firebaseConfig);
 export const firebaseAnalytics = getAnalytics(firebaseApp);
 export const firebaseAuth = getAuth(firebaseApp);
 export const firebaseFirestore = getFirestore(firebaseApp);
+
+export const teamCollection = collection(firebaseFirestore, 'teams').withConverter({
+  fromFirestore: (snapshot: QueryDocumentSnapshot, options?: SnapshotOptions): Team => {
+    const data = snapshot.data(options)!;
+    return { id: data.id, name: data.name, adminUserIds: data.adminUserIds, memberUserIds: data.adminUserIds };
+  },
+  toFirestore: (modelObject: Team): DocumentData => modelObject,
+});
