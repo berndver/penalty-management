@@ -1,14 +1,25 @@
 import { FunctionComponent } from 'react';
-import { Box, Typography } from '@mui/material';
-import PenaltyList from '../components/common/PenaltyList';
+import { useSelector } from 'react-redux';
+import { useFirestoreConnect } from 'react-redux-firebase';
+
+import PageContainer from '../components/common/PageContainer';
+import PageHeading from '../components/common/PageHeading';
+import TeamList from '../components/common/TeamList';
+import { TEAM_COLLECTION } from '../constants/firebaseCollections';
+import { selectUserId } from '../redux-modules/firebase/selectors';
+import { selectTeams } from '../redux-modules/firestore/selectors';
 
 const HomePage: FunctionComponent = () => {
+  const userId = useSelector(selectUserId);
+  const teams = useSelector(selectTeams);
+
+  useFirestoreConnect([{ collection: TEAM_COLLECTION, limit: 20, where: ['memberUserIds', 'array-contains', userId] }]);
+
   return (
-    <Box>
-      <Box>
-        <Typography variant="h5">Recent Penalties</Typography>
-      </Box>
-    </Box>
+    <PageContainer>
+      <PageHeading>My Teams</PageHeading>
+      <TeamList values={teams} />
+    </PageContainer>
   );
 };
 

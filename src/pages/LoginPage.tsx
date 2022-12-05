@@ -1,24 +1,31 @@
-import { FunctionComponent, useEffect } from 'react';
-import GoogleLoginButton from '../components/common/GoogleLoginButton';
-import { useNavigate } from 'react-router-dom';
+import { Box, styled } from '@mui/material';
+import React, { FunctionComponent, useEffect } from 'react';
 import { useSelector } from 'react-redux';
-import { selectStatus } from '../redux-modules/domain/login/selectors';
-import { LoginStatus } from '../constants/loginStatus';
+import { useNavigate } from 'react-router-dom';
 
+import GoogleLoginButton from '../components/common/GoogleLoginButton';
+import { selectIsAuthenticated } from '../redux-modules/firebase/selectors';
+
+const ContainerBox = styled(Box)`
+  margin-top: 15px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+`;
 const LoginPage: FunctionComponent = () => {
   const navigate = useNavigate();
 
-  const loginStatus = useSelector(selectStatus);
+  const isAuthenticated = useSelector(selectIsAuthenticated);
 
   useEffect(() => {
-    if (loginStatus !== LoginStatus.Authenticated) return;
+    if (!isAuthenticated) return;
     navigate({ pathname: 'home' });
-  }, [loginStatus, navigate]);
+  }, [isAuthenticated, navigate]);
 
   return (
-    <>
+    <ContainerBox>
       <GoogleLoginButton />
-    </>
+    </ContainerBox>
   );
 };
 

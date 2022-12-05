@@ -1,14 +1,11 @@
 import { combineReducers, configureStore } from '@reduxjs/toolkit';
-import { loginReducer } from './domain/login/reducer';
-import { penaltyReducer } from './domain/penalty/reducer';
-import { penaltyMiddleware } from './domain/penalty/middlewares';
-import { teamReducer } from './domain/team/reducer';
+import { firebaseReducer } from 'react-redux-firebase';
+import { firestoreReducer } from 'redux-firestore';
 
-const domainReducer = combineReducers({ login: loginReducer, penalty: penaltyReducer, team: teamReducer });
-
+const rootReducer = combineReducers({
+  firebase: firebaseReducer,
+  firestore: firestoreReducer,
+});
 export const store = configureStore({
-  reducer: {
-    domain: domainReducer,
-  },
-  middleware: (getDefaultMiddleware) => getDefaultMiddleware().prepend([...penaltyMiddleware]),
+  reducer: rootReducer,
 });
